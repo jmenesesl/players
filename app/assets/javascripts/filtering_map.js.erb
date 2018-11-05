@@ -1,0 +1,64 @@
+//= require Chart.bundle
+//= require chartkick
+$(document).ready(function() {
+
+  $("#eliminar").click(function(e) {
+    var countryName = $("#country_drop").val();
+    dropFromMap(countryName);
+    $("#country_drop").val("");
+
+    // Lee la información Json del textarea
+    json_countries = JSON.parse($("#content_json").val());
+    countries_updated = [];
+
+    // Se busca y se añaden todos los demás paises
+    for (var key in json_countries) {
+      if (json_countries[key].country != countryName) {
+        countries_updated.push(json_countries[key]);
+      };
+    };
+    // Actualizamos el objeto Json
+    $("#content_json").val(JSON.stringify(countries_updated));
+  });
+
+  $("#woAmerica").click(function (e) {
+    var json_countries = $("#content_json").val();
+    json_countries = JSON.parse(json_countries);
+    console.log(json_countries);
+     var countries_map_values = {};
+    for (var key in json_countries) {
+      if (json_countries[key].country != "RU") {
+
+        if (!countries_map_values.hasOwnProperty(json_countries[key].country)) {
+          countries_map_values[json_countries[key].country] = 1;
+        } else {
+          countries_map_values[json_countries[key].country] += 1;
+        }
+      }
+    }
+    var chart = Chartkick.charts["chart-1"];
+    chart.updateData(countries_map_values);
+    console.log(Chartkick.charts["chart-1"].dataSource);
+  });
+});
+
+// Esta función se utiliza para eliminar los objetos que contengan el pais especificado
+function dropFromMap(countryName) {
+  var json_countries = $("#content_json").val();
+  json_countries = JSON.parse(json_countries);
+  console.log(json_countries);
+   var countries_map_values = {};
+  for (var key in json_countries) {
+    if (json_countries[key].country != countryName) {
+      // Se crea un hash tipo hashset (no repite valores)
+      if (!countries_map_values.hasOwnProperty(json_countries[key].country)) {
+        countries_map_values[json_countries[key].country] = 1;
+      } else {
+        countries_map_values[json_countries[key].country] += 1;
+      }
+    }
+  }
+  var chart = Chartkick.charts["chart-1"];
+  chart.updateData(countries_map_values);
+  console.log(Chartkick.charts["chart-1"].dataSource);
+}
