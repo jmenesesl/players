@@ -11,21 +11,18 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
-  <h1> Map By Time </h1>
+  <h1> Map Filter </h1>
   <div class="container">
     <div class="row">
-      <div class="col-12" id="divmap"><%= geo_chart @countries_to_map%></div>
-    <div class="col-9">
-      <button id="woAmerica">c1</button>
-      <button>c2</button>
-      <button>c3</button>
-    </div>
-    <textarea id="content_json"><%= @players_updated.to_json%></textarea>
+      <div class="col-12" id="divmap"><%= geo_chart @countries_to_map %></div>
+    <textarea id="content_json" rows="4" cols="50"><%= @players_updated.to_json %></textarea>
   </div>
 
   <div>
-    <p1>Elimina mapa:<p1>
+    <p1>Elimina país:<p1>
     <input type="text" id="country_drop"> </input>
     <button id="eliminar" >Eliminar</button>
   </div>
+  <br>
+  <button id="reiniciar">Reiniciar mapa</button>
 </div>

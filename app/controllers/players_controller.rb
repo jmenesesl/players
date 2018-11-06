@@ -21,7 +21,7 @@ class PlayersController < ApplicationController
     end
 
     # Send variable updated on country alpha3 => name for manage on javascript
-    @players = Player.select(:id, :name, :country).all
+    @players = Player.select(:id, :name, :country, 'TRUE AS added').all
     @players_updated = [];
     @players.each do |player|
       c = ISO3166::Country.find_country_by_alpha3(player.country)

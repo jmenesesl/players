@@ -1,55 +1,43 @@
 //= require Chart.bundle
 //= require chartkick
 $(document).ready(function() {
-
   $("#eliminar").click(function(e) {
     var countryName = $("#country_drop").val();
-    dropFromMap(countryName);
-    $("#country_drop").val("");
-
+    countryName = countryName.toUpperCase();
     // Lee la información Json del textarea
     json_countries = JSON.parse($("#content_json").val());
-    countries_updated = [];
-
     // Se busca y se añaden todos los demás paises
     for (var key in json_countries) {
-      if (json_countries[key].country != countryName) {
-        countries_updated.push(json_countries[key]);
+      if (json_countries[key].country == countryName) {
+        // countries_updated.push(json_countries[key]);
+        json_countries[key].added = 0;
       };
     };
     // Actualizamos el objeto Json
-    $("#content_json").val(JSON.stringify(countries_updated));
+    $("#content_json").val(JSON.stringify(json_countries));
+    updateMap();
+    $("#country_drop").val("");
   });
 
-  $("#woAmerica").click(function (e) {
-    var json_countries = $("#content_json").val();
-    json_countries = JSON.parse(json_countries);
-    console.log(json_countries);
-     var countries_map_values = {};
-    for (var key in json_countries) {
-      if (json_countries[key].country != "RU") {
-
-        if (!countries_map_values.hasOwnProperty(json_countries[key].country)) {
-          countries_map_values[json_countries[key].country] = 1;
-        } else {
-          countries_map_values[json_countries[key].country] += 1;
-        }
+  $("#reiniciar").click(function (e) {
+    json_countries = JSON.parse($("#content_json").val());
+      for (var key in json_countries) {
+          json_countries[key].added = 1;
       }
-    }
-    var chart = Chartkick.charts["chart-1"];
-    chart.updateData(countries_map_values);
-    console.log(Chartkick.charts["chart-1"].dataSource);
+      $("#content_json").val(JSON.stringify(json_countries));
+      updateMap();
   });
 });
 
-// Esta función se utiliza para eliminar los objetos que contengan el pais especificado
-function dropFromMap(countryName) {
+// Esta función se utiliza para actualizar el chart mapa con los objetos que sean visibles added = 1(true)
+// https://github.com/ankane/chartkick/issues/304 Actualizar el chart
+
+function updateMap() {
   var json_countries = $("#content_json").val();
   json_countries = JSON.parse(json_countries);
-  console.log(json_countries);
    var countries_map_values = {};
   for (var key in json_countries) {
-    if (json_countries[key].country != countryName) {
+    if (json_countries[key].added != 0) {
       // Se crea un hash tipo hashset (no repite valores)
       if (!countries_map_values.hasOwnProperty(json_countries[key].country)) {
         countries_map_values[json_countries[key].country] = 1;
@@ -60,5 +48,4 @@ function dropFromMap(countryName) {
   }
   var chart = Chartkick.charts["chart-1"];
   chart.updateData(countries_map_values);
-  console.log(Chartkick.charts["chart-1"].dataSource);
 }
