@@ -19,11 +19,83 @@ $(document).ready(function() {
     $("#country_drop").val("");
   });
 
-  $("#reiniciar").click(function (e) {
+  $("#date_anyTime").click(function (e) {
     json_countries = JSON.parse($("#content_json").val());
       for (var key in json_countries) {
           json_countries[key].added = 1;
       }
+      $("#content_json").val(JSON.stringify(json_countries));
+      updateMap();
+  });
+
+  $("#date_today").click(function (e) {
+      today = new Date();
+      today = Date.parse(today.toDateString());
+      json_countries = JSON.parse($("#content_json").val());
+
+      for (var key in json_countries) {
+        date_string = json_countries[key].created_at.substring(0,10);
+        date_object = Date.parse(date_string);
+        // Importante: hoy empieza desde las 00 hasta el timestamp actual
+        // date_object <= Date.parse(new Date())
+          if (date_object >= today ) {
+            json_countries[key].added = 1;
+          } else {
+            json_countries[key].added = 0;
+          }
+      }
+      $("#content_json").val(JSON.stringify(json_countries));
+      updateMap();
+  });
+
+
+  $("#date_thisWeek").click(function (e) {
+      dateUntil = new Date();
+      dateUntil = Date.parse(dateUntil);
+      days = 7;
+      var date = new Date();
+      // Con la siguiente linea, obtenemos el dia de hoy a las 00:00
+      date = new Date(Date.parse(date.toDateString()));
+      // Con la siguiente linea, obtenemos el dia de hace 7 dias a las 00:00
+      dateFrom = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+
+      json_countries = JSON.parse($("#content_json").val());
+
+      for (var key in json_countries) {
+        date_string = json_countries[key].created_at.substring(0,10);
+        date_object = Date.parse(date_string);
+          if (date_object <= dateUntil && date_object >= dateFrom ) {
+            json_countries[key].added = 1;
+          } else {
+            json_countries[key].added = 0;
+          }
+      }
+
+      $("#content_json").val(JSON.stringify(json_countries));
+      updateMap();
+  });
+
+
+  $("#filterDate").click(function (e) {
+      dateFrom = $("#dateFrom").val();
+      dateUntil = $("#dateUntil").val();
+      alert("Desde: " + dateFrom + " Hasta: " + dateUntil);
+      dateFrom = Date.parse(dateFrom);
+      dateUntil = Date.parse(dateUntil);
+
+      json_countries = JSON.parse($("#content_json").val());
+
+      for (var key in json_countries) {
+        date_string = json_countries[key].created_at.substring(0,10);
+        date_object = Date.parse(date_string);
+        // No tiene en cuenta horas ni minutos. por lo tanto obtiene por dias enteros.
+          if (date_object <= dateUntil && date_object >= dateFrom ) {
+            json_countries[key].added = 1;
+          } else {
+            json_countries[key].added = 0;
+          }
+      }
+
       $("#content_json").val(JSON.stringify(json_countries));
       updateMap();
   });

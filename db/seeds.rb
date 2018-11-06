@@ -14,6 +14,6 @@ include Countries
     name: Faker::FunnyName.name,
     category: Faker::Job.employment_type,
     country: c.alpha3,
-    created_at: Time.now
+    created_at: Faker::Date.between(30.days.ago, Date.today)
   )
 end
